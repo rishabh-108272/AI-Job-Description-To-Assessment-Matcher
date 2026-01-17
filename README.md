@@ -125,10 +125,14 @@ npm run dev
 # 🔌 API Endpoints
 
 ## Health Check
+```bash
 GET /api/health/
+```
 
 ## Analyze Job Description
+```bash
 POST /api/analyze/
+```
 
 ### Request
 ```json
@@ -149,7 +153,9 @@ POST /api/analyze/
 ```
 
 ## Export PDF
+```json
 POST /api/export/pdf/
+```
 
 ---
 
