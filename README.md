@@ -57,6 +57,7 @@ PDF Report Export
 ---
 
 ## 📁 Project Structure
+```bash
 AI-Job-Description-To-Assessment-Matcher/
 │
 ├── backend/
@@ -75,7 +76,7 @@ AI-Job-Description-To-Assessment-Matcher/
 │ └── vite.config.ts
 │
 └── README.md
-
+```
 ---
 
 ## 🚀 Getting Started (Local Setup)
