@@ -6,6 +6,7 @@ The platform extracts skills, computes role complexity, and generates tailored a
 ---
 
 ## 🌐 Live Architecture
+```bash
 React (Vite) Frontend
 ↓
 Django REST API (Vercel)
@@ -13,7 +14,7 @@ Django REST API (Vercel)
 Groq LLM (openai/gpt-oss-20b)
 ↓
 PDF Report Export
-
+```
 ---
 
 ## ✨ Features
