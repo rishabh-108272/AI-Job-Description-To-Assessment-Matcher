@@ -39,7 +39,7 @@ export function AnalyzePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState('');
 
-  // ✅ FILE UPLOAD HANDLER (INSIDE COMPONENT)
+  // FILE UPLOAD HANDLER (INSIDE COMPONENT)
   const handleFileUpload = async (file: File) => {
     try {
       const text = await extractTextFromFile(file);
@@ -189,7 +189,7 @@ export function AnalyzePage() {
                   />
                 </div>
                 <p className="text-sm text-gray-500">
-                  This usually takes 2–3 seconds...
+                  This usually takes 2-3 seconds...
                 </p>
               </div>
             </Card>
