@@ -5,6 +5,7 @@ import { Card } from '../components/Card';
 import { Spinner } from '../components/Spinner';
 import { Upload, FileText } from 'lucide-react';
 import { analyzeJobDescription } from '../services/analysisService';
+import { extractTextFromFile } from '../utils/fileTextExtractor';
 
 const SAMPLE_JD = `Senior Full-Stack Developer
 
@@ -33,9 +34,27 @@ Nice to Have:
 
 export function AnalyzePage() {
   const navigate = useNavigate();
+
   const [jobDescription, setJobDescription] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [progress, setProgress] = useState('');
+
+  // ✅ FILE UPLOAD HANDLER (INSIDE COMPONENT)
+  const handleFileUpload = async (file: File) => {
+    try {
+      const text = await extractTextFromFile(file);
+
+      if (!text.trim()) {
+        alert('No readable text found in file');
+        return;
+      }
+
+      setJobDescription(text);
+    } catch (error) {
+      console.error(error);
+      alert('Unsupported or corrupted file');
+    }
+  };
 
   const handleAnalyze = async () => {
     if (!jobDescription.trim()) {
@@ -51,7 +70,7 @@ export function AnalyzePage() {
       'Identifying soft skills...',
       'Analyzing role complexity...',
       'Matching assessment types...',
-      'Generating recommendations...'
+      'Generating recommendations...',
     ];
 
     for (let i = 0; i < progressSteps.length; i++) {
@@ -84,13 +103,15 @@ export function AnalyzePage() {
                 Analyze Job Description
               </h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Paste your job description below, and our AI will extract key skills, calculate
-                complexity, and recommend the most effective assessments.
+                Paste your job description below, or upload a file, and our AI
+                will extract key skills, calculate complexity, and recommend
+                assessments.
               </p>
             </div>
 
             <Card className="p-8">
               <div className="space-y-6">
+                {/* TEXTAREA */}
                 <div>
                   <label
                     htmlFor="job-description"
@@ -102,7 +123,7 @@ export function AnalyzePage() {
                     id="job-description"
                     rows={16}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-800"
-                    placeholder="Paste your complete job description here... Include job title, responsibilities, required skills, qualifications, and any other relevant details."
+                    placeholder="Paste your complete job description here..."
                     value={jobDescription}
                     onChange={(e) => setJobDescription(e.target.value)}
                   />
@@ -119,16 +140,28 @@ export function AnalyzePage() {
                   </div>
                 </div>
 
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                {/* FILE UPLOAD */}
+                <label className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer block">
                   <Upload className="w-10 h-10 text-gray-400 mx-auto mb-3" />
                   <p className="text-sm text-gray-600 mb-1">
-                    Or drag and drop a file here
+                    Or upload a job description file
                   </p>
                   <p className="text-xs text-gray-500">
-                    PDF, DOC, DOCX, or TXT (Mock UI - file upload not functional)
+                    PDF, DOCX, or TXT
                   </p>
-                </div>
 
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept=".pdf,.docx,.txt"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileUpload(file);
+                    }}
+                  />
+                </label>
+
+                {/* ANALYZE BUTTON */}
                 <div className="flex justify-center pt-4">
                   <Button size="lg" onClick={handleAnalyze}>
                     <FileText className="w-5 h-5 mr-2" />
@@ -137,28 +170,6 @@ export function AnalyzePage() {
                 </div>
               </div>
             </Card>
-
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h3 className="font-semibold text-blue-900 mb-2">What to expect:</h3>
-              <ul className="space-y-2 text-sm text-blue-800">
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Comprehensive skill extraction (technical, soft skills, and tools)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Role complexity scoring on a 10-point scale</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Tailored assessment recommendations with timing and stage guidance</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Exportable summary for your hiring team</span>
-                </li>
-              </ul>
-            </div>
           </div>
         ) : (
           <div className="flex items-center justify-center min-h-[60vh]">
@@ -172,10 +183,13 @@ export function AnalyzePage() {
                   <p className="text-blue-600 font-medium">{progress}</p>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                  <div className="bg-blue-600 h-full rounded-full animate-pulse" style={{ width: '70%' }} />
+                  <div
+                    className="bg-blue-600 h-full rounded-full animate-pulse"
+                    style={{ width: '70%' }}
+                  />
                 </div>
                 <p className="text-sm text-gray-500">
-                  This usually takes 2-3 seconds...
+                  This usually takes 2–3 seconds...
                 </p>
               </div>
             </Card>
